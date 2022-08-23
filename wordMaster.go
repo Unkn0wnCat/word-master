@@ -78,7 +78,7 @@ func completer(d prompt.Document) []prompt.Suggest {
 			})
 		}
 
-		return pathSuggestions
+		return prompt.FilterHasPrefix(pathSuggestions, d.GetWordBeforeCursor(), true)
 	}
 
 	return prompt.FilterHasPrefix(baseCommands, d.GetWordBeforeCursor(), true)
@@ -150,6 +150,7 @@ func run(command string) {
 	if parts[0] == "load" {
 		if len(parts) < 2 {
 			fmt.Println("Missing argument.")
+			return
 		}
 
 		for _, part := range parts[1:] {
@@ -163,6 +164,7 @@ func run(command string) {
 	if parts[0] == "print" {
 		if len(parts) > 1 {
 			fmt.Println("Unnecessary Argument.")
+			return
 		}
 
 		printList()
@@ -172,6 +174,7 @@ func run(command string) {
 	if parts[0] == "count" {
 		if len(parts) > 1 {
 			fmt.Println("Unnecessary Argument.")
+			return
 		}
 
 		printCount()
@@ -181,6 +184,7 @@ func run(command string) {
 	if parts[0] == "length" {
 		if len(parts) != 2 && len(parts) != 3 {
 			fmt.Println("Invalid Number of Arguments.")
+			return
 		}
 
 		if len(parts) == 2 {
@@ -228,6 +232,7 @@ func run(command string) {
 	if parts[0] == "!mask" || parts[0] == "mask" {
 		if len(parts) < 2 {
 			fmt.Println("Missing argument.")
+			return
 		}
 
 		for _, mask := range parts[1:] {
@@ -246,6 +251,7 @@ func run(command string) {
 	if parts[0] == "!letters" || parts[0] == "letters" {
 		if len(parts) < 2 {
 			fmt.Println("Missing argument.")
+			return
 		}
 
 		for _, letters := range parts[1:] {
@@ -257,6 +263,17 @@ func run(command string) {
 			filterByLetters(letters, false)
 		}
 
+		printCount()
+		return
+	}
+
+	if parts[0] == "clean" {
+		if len(parts) != 2 || parts[1] != "yes" {
+			fmt.Println("Type \"clean yes\" if you REALLY mean it!")
+			return
+		}
+
+		wordList = []string{}
 		printCount()
 		return
 	}
